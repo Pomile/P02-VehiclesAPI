@@ -42,6 +42,7 @@ public class VehiclesApiApplication {
 
     @Bean
     public ModelMapper modelMapper() {
+        System.out.println("I am modelMapper and i have been called");
         return new ModelMapper();
     }
     /**
@@ -51,6 +52,7 @@ public class VehiclesApiApplication {
      */
     @Bean(name="maps")
     public WebClient webClientMaps(@Value("${maps.endpoint}") String endpoint) {
+        System.out.println("I am webClientMaps and i have been called " + endpoint );
         return WebClient.create(endpoint);
     }
 
@@ -61,6 +63,7 @@ public class VehiclesApiApplication {
      */
     @Bean(name="pricing")
     public WebClient webClientPricing(@Value("${pricing.endpoint}") String endpoint) {
+        System.out.println("I am webClientPricing and i have been called " + endpoint );
         return WebClient.create(endpoint);
     }
 

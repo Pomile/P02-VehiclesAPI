@@ -1,13 +1,18 @@
 package com.udacity.vehicles.api;
 
+import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+
+// import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * Implements a REST-based controller for the Vehicles API.
@@ -15,11 +20,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/cars")
 class CarController {
-
     private final CarService carService;
+    private  MapsClient mapsClient;
 
     CarController(CarService carService) {
         this.carService = carService;
+    }
+
+    @Autowired
+    public void setMapsClient(MapsClient mapsClient){
+        this.mapsClient = mapsClient;
     }
 
     /**
@@ -54,15 +64,18 @@ class CarController {
      * @throws URISyntaxException if the request contains invalid fields or syntax
      */
     @PostMapping
-    ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
+    ResponseEntity<Car> post(@Valid @RequestBody Car car) throws URISyntaxException {
         /**
          * TODO: Use the `save` method from the Car Service to save the input car.
          * TODO: Use the `assembler` on that saved car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
-        Car resource = new Car();
+//       Location location = mapsClient.getAddress(car.getLocation());
+//       car.setLocation(location);
 
-        return null;
+       Car resource = carService.save(car);
+
+        return ResponseEntity.created(new URI("/cars/" + resource.getId())).body(resource);
     }
 
     /**
