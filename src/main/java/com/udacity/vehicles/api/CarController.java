@@ -1,9 +1,7 @@
 package com.udacity.vehicles.api;
 
-import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,15 +19,9 @@ import java.util.List;
 @RequestMapping("/cars")
 class CarController {
     private final CarService carService;
-    private  MapsClient mapsClient;
 
     CarController(CarService carService) {
         this.carService = carService;
-    }
-
-    @Autowired
-    public void setMapsClient(MapsClient mapsClient){
-        this.mapsClient = mapsClient;
     }
 
     /**
@@ -48,13 +40,14 @@ class CarController {
      * @return all information for the requested vehicle
      */
     @GetMapping("/{id}")
-    Car get(@PathVariable Long id) {
+    ResponseEntity<Car> get(@PathVariable Long id) {
         /**
          * TODO: Use the `findById` method from the Car Service to get car information.
          * TODO: Use the `assembler` on that car and return the resulting output.
          *   Update the first line as part of the above implementing.
          */
-        return new Car();
+        Car car = carService.findById(id);
+        return ResponseEntity.ok(car);
     }
 
     /**
@@ -70,8 +63,6 @@ class CarController {
          * TODO: Use the `assembler` on that saved car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
-//       Location location = mapsClient.getAddress(car.getLocation());
-//       car.setLocation(location);
 
        Car resource = carService.save(car);
 
