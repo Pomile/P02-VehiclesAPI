@@ -1,6 +1,7 @@
 package com.udacity.vehicles.api;
 
 import com.udacity.vehicles.client.maps.MapsClient;
+import com.udacity.vehicles.client.prices.Price;
 import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.domain.Condition;
 import com.udacity.vehicles.domain.Location;
@@ -21,16 +22,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 /**
  * Implements testing of the CarController class.
@@ -62,10 +65,14 @@ public class CarControllerTest {
     @Before
     public void setup() {
         Car car = getCar();
+        Car car1 = getAcar();
         car.setId(1L);
+        car1.setId(1L);
         given(carService.save(any())).willReturn(car);
-        given(carService.findById(any())).willReturn(car);
+        given(carService.findById(any())).willReturn(car1);
         given(carService.list()).willReturn(Collections.singletonList(car));
+
+
     }
 
     /**
@@ -111,6 +118,14 @@ public class CarControllerTest {
          * TODO: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        mvc.perform(get("/cars/{id}", 1))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.price")
+                        .value("USD 6653.38"))
+                .andExpect(jsonPath("$.location.address")
+                        .value("234 Walter Carringhton avenue"));
     }
 
     /**
@@ -147,6 +162,32 @@ public class CarControllerTest {
         details.setNumberOfDoors(4);
         car.setDetails(details);
         car.setCondition(Condition.USED);
+        return car;
+    }
+
+    private String getPrice(){
+        Price price = new Price();
+        price.setPrice(new BigDecimal(6653.3767d).setScale(2, RoundingMode.HALF_UP));
+        price.setCurrency("USD");
+        price.getVehicleId(1L);
+        return String.format("%s %s", price.getCurrency(), price.getPrice() );
+    }
+
+    private Location getLocation(){
+        Car car = getCar();
+        Location location = new Location(car.getLocation().getLat(), car.getLocation().getLon());
+        location.setAddress("234 Walter Carringhton avenue");
+        location.setCity("Lagos");
+        location.setState("USA");
+        location.setZip("9114");
+
+        return location;
+    }
+
+    private Car getAcar(){
+        Car car = getCar();
+        car.setLocation(getLocation());
+        car.setPrice(getPrice());
         return car;
     }
 }

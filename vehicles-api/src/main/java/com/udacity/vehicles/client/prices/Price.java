@@ -30,7 +30,7 @@ public class Price {
         this.price = price;
     }
 
-    public Long getVehicleId() {
+    public Long getVehicleId(long l) {
         return vehicleId;
     }
 
