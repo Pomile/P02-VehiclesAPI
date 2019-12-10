@@ -39,7 +39,7 @@ class CarController {
      * @param id the id number of the given vehicle
      * @return all information for the requested vehicle
      */
-    @GetMapping("/{id}")
+    @GetMapping( value = "/{id}")
     ResponseEntity<Car> get(@PathVariable Long id) {
         /**
          * TODO: Use the `findById` method from the Car Service to get car information.
@@ -75,7 +75,7 @@ class CarController {
      * @param car The updated information about the related vehicle.
      * @return response that the vehicle was updated in the system
      */
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}")
     ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
         /**
          * TODO: Set the id of the input car object to the `id` input.
@@ -93,7 +93,7 @@ class CarController {
      * @param id The ID number of the vehicle to remove.
      * @return response that the related vehicle is no longer in the system
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}")
     ResponseEntity<?> delete(@PathVariable Long id) {
         /**
          * TODO: Use the Car Service to delete the requested vehicle.
